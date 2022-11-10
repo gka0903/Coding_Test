@@ -10,7 +10,6 @@ def solution(s):
             drop_word = queue.popleft()
             queue.append(drop_word)
 
-
         stack = []
         for q in queue:
             if not stack:
