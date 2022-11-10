@@ -10,6 +10,7 @@ def solution(N, K):
         
     return count
 
+
 print(solution(17, 4))
 print(solution(25, 5))
 
