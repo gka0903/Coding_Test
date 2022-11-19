@@ -21,6 +21,27 @@ def solution(people, limit):
     return answer
 
 
+def solutions(people, limit):
+    boat = 0
+    people.sort(reverse=True)
+    while people:
+        if len(people) >= 2:
+            if people[0] + people[-1] <= limit:
+                boat += 1
+                people.pop(0)
+                people.pop(-1)
+            else:
+                people.pop(0)
+                boat += 1
+        else:
+            people.pop()
+            boat += 1
+
+    return boat
+
 
 print(solution([70, 50, 80, 50], 100))
 print(solution([70, 80, 50], 100))
+
+print(solutions([70, 50, 80, 50], 100))
+print(solutions([70, 80, 50], 100))

@@ -32,4 +32,5 @@ def solution(cards):
     return answer
 
 
+
 print(solution([8, 6, 3, 7, 2, 5, 1, 4]))
