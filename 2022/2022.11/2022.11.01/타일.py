@@ -9,4 +9,4 @@ def solution(n):
     return array[n - 1]
 
 
-print(solution(5))
+print(solution(4))
