@@ -1,6 +1,5 @@
 def isValid(s):
     arr = []
-    arr = []
     for i in s:
         if i == '(' or i == '[' or i == '{':
             arr.append(i)
