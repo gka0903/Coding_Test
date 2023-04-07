@@ -11,7 +11,6 @@ def main(num):
 
 def aliceWin(left_sum, right_sum, left_count, right_count):
     for i in range(right_count + left_count):
-        print(left_sum, right_sum)
         if i % 2 == 0:
             if left_count > 0:
                 left_sum += 9
