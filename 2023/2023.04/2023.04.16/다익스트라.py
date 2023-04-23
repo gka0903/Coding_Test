@@ -41,7 +41,7 @@ def main(start):
 
 def dijkstra(start):
     distance[start] = 0
-    visited[start] = True
+    # visited[start] = True
     # 출발 하는 노드와 이어져 있는 거리들 초기화
     for j in graph[start]:
         distance[j[0]] = j[1]
