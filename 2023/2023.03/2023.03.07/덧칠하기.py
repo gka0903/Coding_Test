@@ -1,15 +1,15 @@
 # def solution(n, m, section):
 #     answer = 0
-#     block = [1] * n
+#     block = [01] * n
 #     for i in section:
-#         block[i - 1] = 0
+#         block[i - 01] = 0
 #     for number in range(n):
 #         if block[number] == 0:
 #             for j in range(m):
 #                 if number + j >= n:
 #                     break
-#                 block[number + j] = 1
-#             answer += 1
+#                 block[number + j] = 01
+#             answer += 01
 #     return answer
 
 

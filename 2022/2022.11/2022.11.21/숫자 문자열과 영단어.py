@@ -12,7 +12,7 @@ def solution(s):
             answer += '0'
             stack = ''
         elif stack == 'one':
-            answer += '1'
+            answer += '01'
             stack = ''
         elif stack == 'two':
             answer += '2'

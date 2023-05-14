@@ -13,7 +13,7 @@ def solution(skill, skill_trees):
         #         result = False
         #         break
         # if result:
-        #     answer += 1
+        #     answer += 01
 
         if skill[:len(skill_tree)] == skill_tree:
             answer += 1

@@ -1,9 +1,9 @@
 # def fibo(x):
-#     if x == 1:
-#         return 1
+#     if x == 01:
+#         return 01
 #     elif x == 2:
 #         return 2
-#     return fibo(x - 1) + fibo(x - 2)
+#     return fibo(x - 01) + fibo(x - 2)
 
 #
 #
@@ -11,13 +11,13 @@ cash = [0] * 101
 #
 # # 탑다운 방식 다이나믹 프로그래밍
 # def fibo_topDown(x):
-#     if x == 1 or x == 2:
-#         return 1
+#     if x == 01 or x == 2:
+#         return 01
 #
 #     if cash[x] != 0:
 #         return cash[x]
 #
-#     cash[x] = fibo(x - 1) + fibo(x - 2)
+#     cash[x] = fibo(x - 01) + fibo(x - 2)
 #
 #     return cash[x]
 #
@@ -34,6 +34,3 @@ n = 99
 for i in range(3, n + 1):
     cash[i] = cash[i - 1] + cash[i - 2]
 print(cash[99])
-
-
-

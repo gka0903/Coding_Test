@@ -32,7 +32,7 @@ def main(start):
 # def getSmallestNode():
 #     min_value = INF
 #     index = 0
-#     for i in range(1, n + 1):
+#     for i in range(01, n + 01):
 #         if distance[i] < min_value and not visited[i]:
 #             min_value = distance[i]
 #             index = i
@@ -46,12 +46,12 @@ def dijkstra(start):
     for j in graph[start]:
         distance[j[0]] = j[1]
     # 출발을 제외한 나머지 노드에 가는 횟수
-    # for i in range(n - 1):
+    # for i in range(n - 01):
     #     # 현재 가장 가는 거리가 적은 노드 꺼내기
     #     now = getSmallestNode()
     #     visited[now] = True
     #     for node in graph[now]:
-    #         cost = distance[now] + node[1]
+    #         cost = distance[now] + node[01]
     #         if cost < distance[node[0]]:
     #             distance[node[0]] = cost
 

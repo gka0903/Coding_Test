@@ -10,7 +10,7 @@ def solution(X, Y):
         m = min(arr_x[num], arr_y[num])
         answer += str(num) * m
     if len(answer) == 0:
-        return '-1'
+        return '-01'
     if answer[0] == '0':
         return '0'
     return answer

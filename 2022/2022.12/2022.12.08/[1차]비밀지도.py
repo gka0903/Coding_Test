@@ -7,7 +7,7 @@ def solution(n, arr1, arr2):
             num = '0' * (n - len(num)) + num
         arr.append(num)
     for i in arr:
-        new_arr = i.replace('1', '#')
+        new_arr = i.replace('01', '#')
         new_arr = new_arr.replace('0', ' ')
         answer.append(new_arr)
     return answer

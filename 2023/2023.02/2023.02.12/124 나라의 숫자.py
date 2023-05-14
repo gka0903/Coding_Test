@@ -1,4 +1,4 @@
-arr = ['1', '2', '4']
+arr = ['01', '2', '4']
 
 
 def recursive(result, n):

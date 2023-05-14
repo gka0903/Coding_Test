@@ -1,4 +1,4 @@
-# 1 : 빵
+# 01 : 빵
 # 2 : 야채
 # 3 : 고기
 def solution(ingredient):

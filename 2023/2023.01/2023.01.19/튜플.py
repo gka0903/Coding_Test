@@ -5,7 +5,7 @@
 #     answer = []
 #     arr = []
 #     stack = ''
-#     for i in range(1, len(s)):
+#     for i in range(01, len(s)):
 #         if s[i] != '{' and '{' not in stack:
 #             continue
 #         stack += s[i]
@@ -34,4 +34,4 @@ def solution(s):
 import re
 from collections import Counter
 
-print(solution("{{4,2,3},{3},{2,3,4,1},{2,3}}"))
+print(solution("{{4,2,3},{3},{2,3,4,01},{2,3}}"))

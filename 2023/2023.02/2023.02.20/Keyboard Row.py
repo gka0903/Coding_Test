@@ -8,7 +8,7 @@ def findWords(words):
         check = ''
         for j in lower_word:
             if j in L1:
-                check += '1'
+                check += '01'
             elif j in L2:
                 check += '2'
             else:
