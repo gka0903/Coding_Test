@@ -2,9 +2,24 @@ from typing import List
 
 
 def maxProduct(nums: List[int]) -> int:
-    return 0
+    multiplication = nums[0]
+    result = []
+    for i in range(1, len(nums)):
+        multiplication *= nums[i]
+        if multiplication < nums[i]:
+            result.append(nums[i])
+        else:
+            if multiplication >= 0:
+                result.append(multiplication)
+    multiplication = nums[-1]
+    for i in range(len(nums) - 2, -1, -1):
+        multiplication *= nums[i]
+        if multiplication < nums[i]:
+            result.append(nums[i])
+        else:
+            if multiplication >= 0:
+                result.append(multiplication)
+    return result
 
-
-# https://leetcode.com/problems/maximum-product-subarray/solutions/1608907/python3-dynamic-programming-explained/
 
 print(maxProduct([2, -5, -2, -4, 3]))
