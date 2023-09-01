@@ -1,16 +1,25 @@
 def solution(coins, amount):
-    coins.sort(reverse=True)
-    result = 0
-    for i in range(len(coins)):
-        if amount >= coins[i]:
-            count = amount // coins[i]
-            amount -= count * coins[i]
-            result += count
+    if amount == 0:
+        return 0
+    dp = [amount + 1] * (amount + 1)
 
-    if amount != 0:
+    for i in coins:
+        for j in range(1, len(dp)):
+            if i < j:
+                if dp[j - i] != amount + 1:
+                    num = dp[j - i] + 1
+                else:
+                    num = dp[j]
+            elif i == j:
+                num = 1
+            else:
+                num = dp[j]
+            dp[j] = min(dp[j], num)
+
+    if dp[-1] == (amount + 1):
         return -1
     else:
-        return result
+        return dp[-1]
 
 
-print(solution([1, 2, 5], 11))
+print(solution([2], 3))
