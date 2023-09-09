@@ -1,4 +1,4 @@
-def solution(coins, amount):
+def solution_1(coins, amount):
     if amount == 0:
         return 0
     dp = [amount + 1] * (amount + 1)
@@ -22,4 +22,4 @@ def solution(coins, amount):
         return dp[-1]
 
 
-print(solution([2], 3))
+print(solution_1([2], 3))
