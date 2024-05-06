@@ -14,4 +14,20 @@ def solution(height):
     return res
 
 
-print(solution([1, 8, 6, 2, 5, 4, 8, 3, 7]))
+def solution2(height):
+    p1 = 0
+    p2 = len(height) - 1
+    result = 0
+    while p2 > p1:
+        h = height[p1] if height[p1] < height[p2] else height[p2]
+        w = p2 - p1
+        if result < h * w:
+            result = w * h
+        if height[p1] > height[p2]:
+            p2 -= 1
+        else:
+            p1 += 1
+    return result
+
+
+print(solution2([1, 8, 6, 2, 5, 4, 8, 3, 7]))
