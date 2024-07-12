@@ -11,8 +11,8 @@ def solution(s, k):
 
         if current_number > maximum_number:
             maximum_number = current_number
-
-        if maximum_number == k
+        #
+        # if maximum_number == k
 
     return maximum_number
 
