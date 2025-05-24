@@ -1,5 +1,3 @@
-## 다시 풀어야 할 문제 리스트
-
 ### 🔁 도둑의 흔적 최소화
 
 - [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/389480?language=python3)
