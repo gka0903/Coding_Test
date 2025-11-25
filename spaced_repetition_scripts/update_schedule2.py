@@ -4,33 +4,25 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 # --- 설정 (사용자 환경에 맞게 수정) ---
-
-# 1. 문제 파일들이 저장된 폴더 경로
 PROBLEMS_DIR = '/Users/hamhyeongbum/coding_test/문제'
-
-# 2. 리뷰 스케줄 CSV 파일 이름
 CSV_FILENAME = 'reviews_schedule.csv'
-
-# 3. 복습 간격 (일 단위) - 마지막 복습을 마치면 목록에서 제거됨
 INTERVALS = [1, 4, 7, 14, 21]
-
-# ------------------------------------
-
-# CSV 파일에 유지할 최종 열 목록
-FINAL_COLUMNS = ['question', 'created_date', 'interval_index', 'next_review_date']
+# --- ✨ 핵심 수정: 컬럼명 변경 ---
+FINAL_COLUMNS = ['question', 'created_date', 'interval_value', 'next_review_date', 'review_today']
 
 
-def add_new_problems(df):
-    """
-    문제 폴더를 스캔하여 CSV에 없는 새 문제를 찾아 DataFrame에 추가합니다.
-    """
-    print("--- 1. 새로운 문제 파일 확인 시작 ---")
+def get_files_in_folder():
+    """문제 폴더에서 .py 파일 목록을 가져옵니다."""
     try:
-        files_in_folder = {f for f in os.listdir(PROBLEMS_DIR) if f.endswith('.py')}
+        return {f for f in os.listdir(PROBLEMS_DIR) if f.endswith('.py')}
     except FileNotFoundError:
         print(f"❌ 오류: 문제 폴더 '{PROBLEMS_DIR}'를 찾을 수 없습니다.")
-        return df
+        return None
 
+
+def add_new_problems(df, files_in_folder):
+    """DataFrame에 없는 새로운 문제를 추가합니다."""
+    print("--- 1. 새로운 문제 파일 확인 시작 ---")
     existing_questions = set(df['question'].unique()) if not df.empty else set()
     new_problems = list(files_in_folder - existing_questions)
 
@@ -38,20 +30,10 @@ def add_new_problems(df):
         print("✨ 새로운 문제가 없습니다.\n")
         return df
 
-    print(f"🆕 {len(new_problems)}개의 새로운 문제를 발견했습니다:")
+    print(f"🆕 {len(new_problems)}개의 새로운 문제를 발견하여 추가합니다:")
     today_str = datetime.today().strftime('%Y-%m-%d')
-    new_data = []
-    for problem in new_problems:
-        print(f"  - {problem}")
-        new_data.append({
-            'question': problem,
-            'created_date': today_str,
-            'interval_index': 0,
-            'next_review_date': (datetime.today() + timedelta(days=INTERVALS[0])).strftime('%Y-%m-%d'),
-        })
 
-    if not new_data:
-        return df
+    new_data = [{'question': problem, 'created_date': today_str} for problem in new_problems]
 
     new_df = pd.DataFrame(new_data)
     updated_df = pd.concat([df, new_df], ignore_index=True)
@@ -59,101 +41,82 @@ def add_new_problems(df):
     return updated_df
 
 
-def update_review_schedule(df):
+def recalculate_all_schedules(df):
     """
-    복습 날짜가 지난 항목들의 다음 복습 일정을 업데이트합니다.
+    모든 항목의 스케줄을 '생성일'과 '오늘'을 기준으로 완전히 재계산합니다.
     """
-    print("--- 2. 복습 일정 업데이트 시작 ---")
+    print("--- 2. 전체 복습 일정 재계산 시작 ---")
+    if df.empty:
+        print("✨ 스케줄이 비어있어 재계산할 항목이 없습니다.\n")
+        return df
+
     today = datetime.today().date()
-    updated_count = 0
 
     for i, row in df.iterrows():
-        if pd.isna(row['next_review_date']) or row['next_review_date'] == 'Completed':
-            continue
+        created_date = datetime.strptime(row['created_date'], '%Y-%m-%d').date()
+        days_passed = (today - created_date).days
 
-        next_review_date = datetime.strptime(row['next_review_date'], '%Y-%m-%d').date()
+        # --- ✨ 핵심 수정: interval_index 대신 interval_value 계산 ---
+        correct_index = -1
+        for idx, interval_days in enumerate(INTERVALS):
+            if days_passed >= interval_days:
+                correct_index = idx
 
-        if next_review_date <= today:
-            updated_count += 1
-            print(f"🔄 복습 항목 업데이트: {row['question']}")
+        # 인덱스에 해당하는 실제 간격 값으로 저장 (없으면 0)
+        interval_value = INTERVALS[correct_index] if correct_index != -1 else 0
+        df.at[i, 'interval_value'] = int(interval_value)
+        # -----------------------------------------------------------
 
-            # 다음 복습 간격 설정
-            current_interval_index = int(row['interval_index']) + 1
-            df.at[i, 'interval_index'] = current_interval_index
+        # 오늘 복습 여부 결정
+        if days_passed in INTERVALS:
+            df.at[i, 'review_today'] = 'O (복습 필요)'
+        else:
+            df.at[i, 'review_today'] = 'X (대기)'
 
-            if current_interval_index < len(INTERVALS):
-                days_to_add = INTERVALS[current_interval_index]
-                new_next_review_date = (datetime.today() + timedelta(days=days_to_add)).strftime('%Y-%m-%d')
-                df.at[i, 'next_review_date'] = new_next_review_date
-            else:
-                # 마지막 복습 완료 표시 (이후 단계에서 삭제됨)
-                df.at[i, 'next_review_date'] = 'Completed'
+        # 다음 복습 날짜 계산
+        next_interval_index = correct_index + 1
+        if next_interval_index < len(INTERVALS):
+            days_to_add = INTERVALS[next_interval_index]
+            next_date = (created_date + timedelta(days=days_to_add)).strftime('%Y-%m-%d')
+            df.at[i, 'next_review_date'] = next_date
+        else:
+            df.at[i, 'next_review_date'] = 'Completed'
 
-    if updated_count == 0:
-        print("✨ 오늘 복습할 항목이 없습니다.\n")
-    else:
-        print(f"✅ 총 {updated_count}개의 항목을 업데이트했습니다.\n")
+    print("✅ 모든 항목의 스케줄을 성공적으로 재계산했습니다.\n")
     return df
 
 
-def remove_completed_reviews(df):
-    """
-    모든 복습 주기를 마친 항목을 DataFrame에서 제거합니다.
-    """
-    print("--- 3. 완료된 복습 항목 제거 시작 ---")
-    completed_index = len(INTERVALS)
-    initial_rows = len(df)
-
-    # 완료된 항목들 필터링
-    completed_items = df[df['interval_index'] >= completed_index]
-
-    if not completed_items.empty:
-        print("🗑️ 다음 항목들의 복습이 완료되어 목록에서 제거합니다:")
-        for _, row in completed_items.iterrows():
-            print(f"  - {row['question']}")
-
-    # 완료되지 않은 항목들만 남기고, 최종 열만 선택
-    df_cleaned = df[df['interval_index'] < completed_index]
-
-    removed_count = initial_rows - len(df_cleaned)
-    if removed_count > 0:
-        print(f"✅ 총 {removed_count}개의 완료된 항목을 제거했습니다.\n")
-    else:
-        print("✨ 완료되어 제거할 항목이 없습니다.\n")
-    return df_cleaned
-
-
 def main():
-    """
-    메인 실행 함수
-    """
+    """메인 실행 함수"""
     try:
-        if not os.path.exists(CSV_FILENAME):
-            print(f"'{CSV_FILENAME}' 파일이 없어 새로 생성합니다.")
-            df = pd.DataFrame(columns=FINAL_COLUMNS)
-        else:
-            df = pd.read_csv(CSV_FILENAME)
+        df = pd.read_csv(CSV_FILENAME) if os.path.exists(CSV_FILENAME) else pd.DataFrame(
+            columns=['question', 'created_date'])
     except Exception as e:
         print(f"❌ CSV 파일을 읽는 중 오류가 발생했습니다: {e}")
         return
 
-    # DataFrame이 비어있지 않다면, 타입 일관성 유지
+    files_in_folder = get_files_in_folder()
+    if files_in_folder is None:
+        return
+
+    # 폴더에 없는 파일 정보는 스케줄에서 제거
     if not df.empty:
-        df['interval_index'] = pd.to_numeric(df['interval_index'], errors='coerce').fillna(0).astype(int)
+        df = df[df['question'].isin(files_in_folder)].reset_index(drop=True)
 
-    # 1. 새로운 문제 추가
-    df = add_new_problems(df)
+    # 새로운 문제 추가 (생성일만 기록)
+    df = add_new_problems(df, files_in_folder)
 
-    # 2. 복습 일정 업데이트
-    df = update_review_schedule(df)
+    # 모든 스케줄 정보를 '오늘' 날짜 기준으로 새로고침
+    df = recalculate_all_schedules(df)
 
-    # 3. 완료된 항목 제거
-    df = remove_completed_reviews(df)
-
-    # 4. 최종적으로 필요한 열만 선택하여 CSV 파일에 저장
+    # 최종적으로 필요한 열만 선택하여 CSV 파일에 저장
+    for col in FINAL_COLUMNS:
+        if col not in df.columns:
+            df[col] = None
     df_to_save = df[FINAL_COLUMNS]
-    df_to_save.to_csv(CSV_FILENAME, index=False)
+    df_to_save['interval_value'] = df_to_save['interval_value'].astype(int)
 
+    df_to_save.to_csv(CSV_FILENAME, index=False)
     print(f"🎉 모든 작업이 완료되었습니다. '{CSV_FILENAME}' 파일이 업데이트되었습니다.")
 
 
