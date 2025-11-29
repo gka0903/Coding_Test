@@ -15,3 +15,4 @@ for i in range(N):
             print(0)
     else:
         heapq.heappush(arr, command)
+        print(arr)

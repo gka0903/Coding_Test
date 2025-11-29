@@ -1,6 +1,7 @@
 import re
 
 
+# 첫 풀이
 def parse(index, file_name):
     file_name = file_name.lower()
 
@@ -28,6 +29,22 @@ def solution(files):
         answer.append(files[p[-1]])
 
     return answer
+
+
+# 두 번째
+def solution2(files):
+    answer = []
+    re_files = []
+
+    for index in range(len(files)):
+        current_file = files[index]
+        f = re.match(r"([^\d]+)(\d+)", current_file.lower())
+        head, number = f.groups()
+        re_files.append((head, int(number), index))
+
+    re_files.sort(key=lambda x: (x[0], x[1], x[2]))
+
+    return [files[i[-1]] for i in re_files]
 
 
 print(solution(["img12.png", "img10.png", "img02.png", "img1.png", "IMG01.GIF", "img2.JPG"]))

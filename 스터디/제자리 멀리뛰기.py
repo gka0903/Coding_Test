@@ -5,17 +5,31 @@ d, n, m = map(int, input().split())
 lands = []
 
 for i in range(n):
-    land = int(input())
-    lands.append(land)
+    r = int(input())
+    lands.append(r)
 lands.sort()
 
-start, end = 1, d
+s = 1
+e = d
+target = None
 
-while start <= end:
-    mid = (start + end) // 2
+while s <= e:
+    mid = (s + e) // 2
+    prev = 0
     cnt = 0
-    prev = lands[0]
 
-    for i in range(len(lands)):
-        now = lands[i]
-        dist = prev - now
+    for r in lands:
+        dist = r - prev
+
+        if dist < mid:
+            cnt += 1
+        else:
+            prev = r
+
+    if cnt <= m:
+        s = mid + 1
+        target = mid
+    else:
+        e = mid - 1
+
+print(target)
