@@ -1,6 +1,17 @@
 {
+  /* --- C++ 관련 설정 --- */
   "files.associations": {
     "ostream": "cpp",
     "unordered_set": "cpp"
+  },
+  "C_Cpp.default.compilerPath": "/usr/bin/clang",
+  /* --- 포맷팅 기본 설정 (전체 적용) --- */
+  "editor.formatOnSave": true,
+  // 기본적으로는 Prettier를 사용 (HTML, CSS, JS, JSON 등)
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  /* --- C++ 파일 전용 예외 설정 --- */
+  // C++은 Prettier 대신 C/C++ 확장 프로그램(Clang-Format)을 사용하도록 강제
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
   }
 }
