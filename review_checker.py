@@ -16,7 +16,14 @@ def get_git_logs():
     try:
         # git log 명령어를 실행하여 날짜와 메시지만 가져옴
         # %ad: author date (short format YYYY-MM-DD), %s: subject
-        cmd = ["git", "log", "--pretty=format:%ad|%s", "--date=short"]
+        max_cycle = max(REVIEW_CYCLES)
+        cmd = [
+            "git",
+            "log",
+            f"--since={max_cycle}.days.ago",
+            "--pretty=format:%ad|%s",
+            "--date=short",
+        ]
         result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
 
         if result.returncode != 0:
