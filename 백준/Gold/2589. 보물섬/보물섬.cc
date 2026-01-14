@@ -9,13 +9,7 @@ vector<int> dx = {1, 0, -1, 0};
 
 int bfs(int y, int x)
 {
-  for (int i = 0; i < H; i++)
-  {
-    for (int j = 0; j < W; j++)
-    {
-      visited[i][j] = -1;
-    }
-  }
+  fill(&visited[0][0], &visited[0][0] + sizeof(visited) / sizeof(int), -1);
 
   int max_distance = 0;
   deque<pair<int, int>> q;
